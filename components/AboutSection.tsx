@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function AboutSection() {
   return (
@@ -42,9 +43,11 @@ export default function AboutSection() {
               untuk memastikan barang tetap aman dan terlindungi.
             </p>
           </div>
-          <Button variant={"custom"} className="p-6 mt-4 cursor-pointer">
-            Mulai Gunakan SIREMBA
-          </Button>
+          <Link href={"/auth/login"}>
+            <Button variant={"custom"} className="p-6 mt-4 cursor-pointer">
+              Mulai Gunakan SIREMBA
+            </Button>
+          </Link>
         </div>
       </div>
     </>

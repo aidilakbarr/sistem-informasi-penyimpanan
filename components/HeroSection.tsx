@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function HeroSection() {
   return (
@@ -20,9 +21,11 @@ export default function HeroSection() {
           yang sedang pindah kos, pulang kampung saat liburan semester, atau
           butuh ruang ekstra sementara.
         </p>
-        <Button variant={"custom"} className="w-fit cursor-pointer px-6 py-6">
-          Sewa Sekarang
-        </Button>
+        <Link href={"/auth/login"}>
+          <Button variant={"custom"} className="w-fit cursor-pointer px-6 py-6">
+            Sewa Sekarang
+          </Button>
+        </Link>
         <div className="flex gap-4 mt-6">
           <div className="border-2 border-solid border- px-6 py-4 rounded-sm border-[#4D55CC] hover:bg-[#4D55CC] font-bold text-[#4D55CC] hover:text-white">
             Daftar Cepat
