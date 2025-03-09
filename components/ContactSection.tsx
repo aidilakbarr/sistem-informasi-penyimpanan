@@ -34,7 +34,7 @@ export default function ContactSection() {
   const onSubmit = async (data: FormData) => {
     setIsLoading(true); // Set loading to true when starting the request
     try {
-      const response = await axios.post("/api/mahasiswa/send-message", data);
+      const response = await axios.post("/api/send-message", data);
 
       toast.success(response.data.message, {
         position: "top-center",

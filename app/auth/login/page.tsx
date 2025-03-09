@@ -58,7 +58,7 @@ export default function LoginForm() {
       if (response.data.user.role === "ADMIN") {
         router.push(`/admin`);
       } else {
-        router.push(`/mahasiswa/${response.data.id}`);
+        router.push(`/${response.data.id}`);
       }
       form.reset();
     } catch (error) {
