@@ -1,3 +1,5 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,13 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
+import UploadFile from "@/components/uploadProfile";
 
 // Definisikan skema Zod untuk validasi
 const pemesananSchema = z.object({
   fotoBarang: z.instanceof(File).refine((file) => file?.size > 0, {
     message: "Foto barang wajib diunggah",
   }),
-  namaBarang: z.string().min(1, "Nama barang tidak boleh kosong"),
+  nama: z.string().min(1, "Nama barang tidak boleh kosong"),
   deskripsiBarang: z.string().optional(),
   durasiPenyimpanan: z.enum(["1 bulan", "3 bulan", "6 bulan", "Kustom"]),
   ukuranBarang: z.enum(["Kecil", "Sedang", "Besar", "Lainnya"]).optional(),
@@ -24,6 +27,7 @@ type FormData = z.infer<typeof pemesananSchema>;
 
 export default function PemesananForm() {
   const [estimasiHarga, setEstimasiHarga] = useState<number | null>(null);
+  const [profile, setProfile] = useState("");
 
   const {
     register,
@@ -40,62 +44,57 @@ export default function PemesananForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <h2 className="text-xl font-semibold mb-4 text-[#4D55CC]">
+        Tambah Pemesanan
+      </h2>
       {/* Unggah Foto Barang */}
       <div className="flex flex-col">
-        <label className="font-medium">Unggah Foto Barang 📷 (Wajib)</label>
-        <input
-          type="file"
-          accept="image/*"
-          {...register("fotoBarang")}
-          className="border p-2 rounded-md"
-        />
-        {errors.fotoBarang && (
-          <span className="text-red-500 text-sm">
-            {errors.fotoBarang.message}
-          </span>
-        )}
+        <label className="font-medium mb-2">Unggah Foto Barang (Wajib)</label>
+        <UploadFile setProfile={setProfile} imageURL={profile} />
       </div>
 
       {/* Nama Barang */}
       <div className="flex flex-col">
-        <label className="font-medium">Nama Barang ✍️ (Wajib)</label>
-        <Input
+        <label className="font-medium mb-2">Nama Anda (Wajib)</label>
+        <input
+          {...register("nama")}
           type="text"
-          {...register("namaBarang")}
-          placeholder="Masukkan nama barang"
-          className="border p-2 rounded-md"
+          placeholder="Nama"
+          className="w-full p-3 border rounded-md focus:ring-2 focus:ring-[#4D55CC] focus:outline-none"
         />
-        {errors.namaBarang && (
-          <span className="text-red-500 text-sm">
-            {errors.namaBarang.message}
-          </span>
+        {errors.nama && (
+          <span className="text-red-500 text-sm">{errors.nama.message}</span>
         )}
       </div>
 
       {/* Deskripsi Barang */}
       <div className="flex flex-col">
-        <label className="font-medium">Deskripsi Barang 📝 (Opsional)</label>
-        <Textarea
+        <label className="font-medium mb-2">Deskripsi Barang (Opsional)</label>
+        <textarea
           {...register("deskripsiBarang")}
           placeholder="Deskripsikan barang jika diperlukan"
-          className="border p-2 rounded-md"
+          className="w-full p-3 border rounded-md focus:ring-2 focus:ring-[#4D55CC] focus:outline-none"
         />
       </div>
 
       {/* Estimasi Durasi Penyimpanan */}
       <div className="flex flex-col">
-        <label className="font-medium">
-          Estimasi Durasi Penyimpanan ⏳ (Wajib)
+        <label className="font-medium mb-2">
+          Estimasi Durasi Penyimpanan (Wajib)
         </label>
-        <Select
+        <select
           {...register("durasiPenyimpanan")}
-          className="border p-2 rounded-md"
+          className="w-full p-3 border rounded-md focus:ring-2 focus:ring-[#4D55CC] focus:outline-none"
         >
           <option value="1 bulan">1 bulan</option>
+          <option value="1 bulan">2 bulan</option>
           <option value="3 bulan">3 bulan</option>
+          <option value="3 bulan">4 bulan</option>
+          <option value="3 bulan">5 bulan</option>
           <option value="6 bulan">6 bulan</option>
+          <option value="6 bulan">1 tahun</option>
           <option value="Kustom">Kustom</option>
-        </Select>
+        </select>
         {errors.durasiPenyimpanan && (
           <span className="text-red-500 text-sm">
             {errors.durasiPenyimpanan.message}
@@ -105,45 +104,43 @@ export default function PemesananForm() {
 
       {/* Perkiraan Ukuran Barang */}
       <div className="flex flex-col">
-        <label className="font-medium">
-          Perkiraan Ukuran Barang 📏 (Opsional)
+        <label className="font-medium mb-2">
+          Perkiraan Ukuran Barang (Opsional)
         </label>
-        <Select {...register("ukuranBarang")} className="border p-2 rounded-md">
+        <select
+          {...register("ukuranBarang")}
+          className="w-full p-3 border rounded-md focus:ring-2 focus:ring-[#4D55CC] focus:outline-none"
+        >
           <option value="Kecil">Kecil</option>
           <option value="Sedang">Sedang</option>
           <option value="Besar">Besar</option>
           <option value="Lainnya">Lainnya</option>
-        </Select>
+        </select>
       </div>
 
       {/* Catatan Tambahan */}
       <div className="flex flex-col">
-        <label className="font-medium">Catatan Tambahan 📝 (Opsional)</label>
-        <Textarea
+        <label className="font-medium mb-2">Catatan Tambahan (Opsional)</label>
+        <textarea
           {...register("catatan")}
           placeholder="Tuliskan catatan tambahan jika ada"
-          className="border p-2 rounded-md"
+          className="w-full p-3 border rounded-md focus:ring-2 focus:ring-[#4D55CC] focus:outline-none"
         />
       </div>
 
       {/* Estimasi Harga */}
       <div className="flex flex-col">
-        <label className="font-medium">Estimasi Harga 💰</label>
-        <Input
-          type="text"
-          value={
-            estimasiHarga
-              ? `Rp ${estimasiHarga.toLocaleString()}`
-              : "Menghitung..."
-          }
-          readOnly
-          className="bg-gray-100 text-gray-500"
-        />
+        <label className="font-medium mb-2">Estimasi Harga</label>
+        <div className="">
+          {estimasiHarga
+            ? `Rp ${estimasiHarga.toLocaleString()}`
+            : "Menghitung..."}
+        </div>
       </div>
 
       {/* Tombol Ajukan Pemesanan */}
-      <Button type="submit" className="w-full bg-blue-600 text-white">
-        Ajukan Pemesanan 🚀
+      <Button type="submit" variant={"custom"} className="w-full py-5">
+        Ajukan Pemesanan
       </Button>
     </form>
   );

@@ -17,7 +17,7 @@ const Header = (props: {
     console.log({ user });
   }, [user]);
   return (
-    <header className="sticky top-0 z-999 flex w-full drop-shadow-1 bg-boxdark drop-shadow-none border-b-2">
+    <header className="sticky top-0 z-999 flex w-full drop-shadow-1 bg-white dark:bg-black drop-shadow-none border-b-2">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
         <div className="flex items-center gap-2 sm:gap-4 lg:hidden">
           {/* <!-- Hamburger Toggle BTN --> */}

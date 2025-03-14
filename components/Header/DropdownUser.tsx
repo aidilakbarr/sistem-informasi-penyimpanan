@@ -88,12 +88,12 @@ const DropdownUser = ({ profile }: { profile: string }) => {
       {/* <!-- Dropdown Start --> */}
       {dropdownOpen && (
         <div
-          className={`absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke dark:bg-black shadow-default z-99`}
+          className={`absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white dark:bg-black shadow-default z-99`}
         >
           <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5">
             <li>
               <Link
-                href={`/${params.idUser}/profile`}
+                href={`/${params.idMahasiswa}/profil`}
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
               >
                 <svg
@@ -113,7 +113,7 @@ const DropdownUser = ({ profile }: { profile: string }) => {
                     fill=""
                   />
                 </svg>
-                My Profile
+                Profil Saya
               </Link>
             </li>
             <li>
@@ -138,7 +138,7 @@ const DropdownUser = ({ profile }: { profile: string }) => {
                     fill=""
                   />
                 </svg>
-                Account Settings
+                Pengaturan Akun
               </Link>
             </li>
           </ul>
