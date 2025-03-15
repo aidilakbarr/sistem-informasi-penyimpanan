@@ -13,7 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id             String      @id @default(uuid())
   name           String
@@ -28,9 +27,37 @@ model User {
   lastLogin      DateTime?
   profilePicture String?
   role           Role     @default(USER)
+
+  pemesanan Pemesanan[]
 }
 
 enum Role {
   ADMIN
   USER
+}
+
+model Pemesanan {
+  id               String      @id @default(uuid())
+  fotoBarang       String
+  nama             String
+  deskripsiBarang  String?
+  durasiPenyimpanan String
+  ukuranBarang     String
+  catatan          String?
+  harga    Int?
+  penjemputan      String
+  isAccepted Boolean @default(false)
+  status  Status @default(WAITING)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  userId String 
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Status {
+  WAITING
+  ACCEPTED
+  REJECTED
+  COMPLETED
 }
