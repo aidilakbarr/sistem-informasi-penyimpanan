@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  DialogDescription,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -35,10 +34,6 @@ const StorageStatus: React.FC = () => {
 
     fetchPemesanan();
   }, [params]);
-
-  useEffect(() => {
-    console.log({ storage });
-  }, [storage]);
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4 text-[#4D55CC]">

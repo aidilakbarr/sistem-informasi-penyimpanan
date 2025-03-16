@@ -61,9 +61,11 @@ export async function GET(req: Request) {
     });
 
     if (userIsExist.role === "USER") {
-      return NextResponse.redirect(new URL(`/${userIsExist.id}`, req.url));
+      return NextResponse.redirect(
+        new URL(`/mahasiswa/${userIsExist.id}`, req.url)
+      );
     }
-    return NextResponse.redirect(new URL(`/store/${userIsExist.id}`, req.url));
+    return NextResponse.redirect(new URL(`/admin`, req.url));
   }
 
   const user = await prisma.user.create({
