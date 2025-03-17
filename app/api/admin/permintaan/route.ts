@@ -3,80 +3,96 @@ import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-// export async function POST(
-//   req: Request,
-//   { params }: { params: { idMahasiswa: string } }
-// ) {
-//   try {
-//     const { idMahasiswa } = await params;
+export async function PUT(req: Request) {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value || "";
+    const decoded = await verifyAccessToken(accessToken);
+    if (!decoded || decoded.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Unauthorized", decoded },
+        { status: 401 }
+      );
+    }
 
-//     if (!idMahasiswa) {
-//       return NextResponse.json(
-//         { error: "Missing idMahasiswa parameter" },
-//         { status: 400 }
-//       );
-//     }
+    const body = await req.json();
 
-//     const cookieStore = await cookies();
-//     const accessToken = cookieStore.get("accessToken")?.value || "";
-//     const decoded = await verifyAccessToken(accessToken);
-//     if (!decoded || decoded.id !== idMahasiswa) {
-//       return NextResponse.json(
-//         { error: "Unauthorized", decoded, idMahasiswa },
-//         { status: 401 }
-//       );
-//     }
+    const { harga, idMahasiswa, idPermintaan } = body;
 
-//     const body = await req.json();
-//     const parsedData = pemesananSchema.safeParse(body);
+    const pemesanan = await prisma.pemesanan.update({
+      data: {
+        harga,
+      },
+      where: {
+        id: idPermintaan,
+        userId: idMahasiswa,
+      },
+    });
 
-//     if (!parsedData.success) {
-//       return NextResponse.json(
-//         { error: parsedData.error.errors },
-//         {
-//           status: 400,
-//         }
-//       );
-//     }
+    return NextResponse.json(
+      {
+        message: "Update Harga Berhasil",
+        pemesanan,
+        idPermintaan,
+        idMahasiswa,
+        harga,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("[PEMESANAN]: ", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
 
-//     const {
-//       fotoBarang,
-//       nama,
-//       deskripsiBarang,
-//       durasiPenyimpanan,
-//       ukuranBarang,
-//       catatan,
-//       estimasiHarga,
-//       penjemputan,
-//     } = body;
+export async function PATCH(req: Request) {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value || "";
+    const decoded = await verifyAccessToken(accessToken);
+    if (!decoded || decoded.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Unauthorized", decoded },
+        { status: 401 }
+      );
+    }
 
-//     const pemesanan = await prisma.pemesanan.create({
-//       data: {
-//         fotoBarang,
-//         nama,
-//         deskripsiBarang,
-//         durasiPenyimpanan,
-//         ukuranBarang,
-//         catatan,
-//         harga: estimasiHarga,
-//         penjemputan,
-//         status: "WAITING",
-//         userId: idMahasiswa,
-//       },
-//     });
+    const body = await req.json();
 
-//     return NextResponse.json(
-//       { message: "Pemesanan Berhasil", pemesanan },
-//       { status: 200 }
-//     );
-//   } catch (error) {
-//     console.error("[PEMESANAN]: ", error);
-//     return NextResponse.json(
-//       { error: "Internal Server Error" },
-//       { status: 500 }
-//     );
-//   }
-// }
+    const { idMahasiswa, idPermintaan } = body;
+
+    const pemesanan = await prisma.pemesanan.update({
+      data: {
+        isAccepted: true,
+        status: "ACCEPTED",
+        paid: false,
+      },
+      where: {
+        id: idPermintaan,
+        userId: idMahasiswa,
+      },
+    });
+
+    return NextResponse.json(
+      {
+        message: "Pemesanan dikonfirmasi",
+        pemesanan,
+        idPermintaan,
+        idMahasiswa,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("[PEMESANAN]: ", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
 
 export async function GET(req: Request) {
   try {
@@ -94,6 +110,9 @@ export async function GET(req: Request) {
       where: {
         isAccepted: false,
       },
+      include: {
+        user: true,
+      },
     });
 
     if (!pemesanan || pemesanan.length < 1) {
@@ -106,6 +125,51 @@ export async function GET(req: Request) {
     return NextResponse.json(pemesanan, { status: 200 });
   } catch (error) {
     console.error("[GET_PERMINTAAN]: ", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value || "";
+    const decoded = await verifyAccessToken(accessToken);
+    if (!decoded || decoded.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Unauthorized", decoded },
+        { status: 401 }
+      );
+    }
+
+    const body = await req.json();
+
+    const { pesan, idMahasiswa, idPermintaan } = body;
+
+    const pemesanan = await prisma.pemesanan.update({
+      data: {
+        pesan,
+      },
+      where: {
+        id: idPermintaan,
+        userId: idMahasiswa,
+      },
+    });
+
+    return NextResponse.json(
+      {
+        message: "Penolakan Berhasil",
+        pemesanan,
+        idPermintaan,
+        idMahasiswa,
+        pesan,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("[PENOLAKAN]: ", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

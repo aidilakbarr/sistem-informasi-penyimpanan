@@ -1,20 +1,16 @@
 "use client";
 
-import { useForm, useWatch, Controller } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import UploadFile from "@/components/uploadProfile";
+import UploadImage from "@/components/uploadImage";
 import db from "@/lib/axiosInstance";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 // Definisikan skema Zod untuk validasi
 const pemesananSchema = z.object({
-  fotoBarang: z
-    .string()
-    .url("URL gambar tidak valid")
-    .min(1, "Foto barang wajib diunggah"),
   nama: z
     .string()
     .min(1, "Nama barang tidak boleh kosong") // Pesan kustom jika nama barang kosong
@@ -103,6 +99,8 @@ const hitungEstimasiHarga = (
 export default function PemesananForm() {
   const [estimasiHarga, setEstimasiHarga] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [imageURLs, setImageURLs] = useState<string[]>([]);
+  const [err, setErr] = useState<string | null>(null);
 
   const {
     register,
@@ -118,11 +116,17 @@ export default function PemesananForm() {
   const router = useRouter();
 
   const onSubmit = async (data: FormData) => {
+    if (imageURLs.length <= 0) {
+      setErr("Harus upload minimal 1 gambar");
+      return;
+    }
+    setErr(null);
     setLoading(true);
     try {
       const pemesanan = await db.post(`api/${params.idMahasiswa}/pemesanan`, {
         ...data,
         estimasiHarga,
+        fotoBarang: imageURLs,
       });
 
       reset();
@@ -155,18 +159,10 @@ export default function PemesananForm() {
       {/* Unggah Foto Barang */}
       <div className="flex flex-col">
         <label className="font-medium mb-2">Unggah Foto Barang (Wajib)</label>
-        <Controller
-          name="fotoBarang"
-          control={control}
-          render={({ field }) => (
-            <UploadFile imageURL={field.value} setProfile={field.onChange} />
-          )}
-        />
-        {errors.fotoBarang && (
-          <span className="text-red-500 text-sm">
-            {errors.fotoBarang.message}
-          </span>
-        )}
+        <div className="flex flex-col gap-4">
+          <UploadImage imageURLs={imageURLs} setImageURLs={setImageURLs} />
+          {err && <p className="text-red-500">{err}</p>}
+        </div>
       </div>
 
       {/* Nama Barang */}

@@ -38,8 +38,8 @@ enum Role {
 
 model Pemesanan {
   id               String      @id @default(uuid())
-  fotoBarang       String
   nama             String
+  fotoBarang  String[]
   deskripsiBarang  String?
   durasiPenyimpanan String
   ukuranBarang     String
@@ -48,6 +48,8 @@ model Pemesanan {
   penjemputan      String
   isAccepted Boolean @default(false)
   status  Status @default(WAITING)
+  rejectMessage String?
+  paid Boolean @default(false)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 

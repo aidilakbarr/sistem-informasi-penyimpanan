@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -11,6 +12,7 @@ import {
 import db from "@/lib/axiosInstance";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -34,6 +36,10 @@ const StorageStatus: React.FC = () => {
 
     fetchPemesanan();
   }, [params]);
+
+  useEffect(() => {
+    console.log({ storage });
+  }, [storage]);
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4 text-[#4D55CC]">
@@ -65,7 +71,7 @@ const StorageStatus: React.FC = () => {
                   </td>
                   <td className="border p-3">
                     <Image
-                      src={item.fotoBarang}
+                      src={item.fotoBarang[0]}
                       alt="Foto Barang"
                       className="w-16 h-16 object-cover rounded-md mx-auto"
                       width={100}
@@ -152,17 +158,29 @@ const StorageStatus: React.FC = () => {
                                 <td className="border p-3 font-semibold">
                                   Foto
                                 </td>
-                                <td className="border p-3">
-                                  <img
-                                    src={item.fotoBarang}
-                                    alt="Foto Barang"
-                                    className="w-32 h-32 object-cover rounded-md"
-                                  />
+                                <td className="border p-3 flex gap-2">
+                                  {item.fotoBarang.map((url, index) =>
+                                    url ? (
+                                      <Image
+                                        key={index}
+                                        src={url}
+                                        alt={`Product Image ${index}`}
+                                        className="w-32 h-32 object-cover border-2"
+                                        width={200}
+                                        height={200}
+                                      />
+                                    ) : null
+                                  )}
                                 </td>
                               </tr>
                             </tbody>
                           </table>
                         </DialogHeader>
+                        {item.status === "ACCEPTED" && (
+                          <Link href={`/${params.idMahasiswa}/pembayaran`}>
+                            <Button variant={"custom"}>Bayar</Button>
+                          </Link>
+                        )}
                       </DialogContent>
                     </Dialog>
                   </td>

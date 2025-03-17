@@ -6,8 +6,7 @@ import * as z from "zod";
 
 const pemesananSchema = z.object({
   fotoBarang: z
-    .string()
-    .url("URL gambar tidak valid")
+    .array(z.string().url("URL gambar tidak valid"))
     .min(1, "Foto barang wajib diunggah"),
   nama: z
     .string()
