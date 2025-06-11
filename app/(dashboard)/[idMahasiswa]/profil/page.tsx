@@ -1,6 +1,6 @@
 "use client";
 
-import UploadFile from "@/components/uploadProfile";
+import UploadFile from "@/components/uploadImage";
 import useFetchUser from "@/hooks/useFetchUser";
 import db from "@/lib/axiosInstance";
 import { zodResolver } from "@hookform/resolvers/zod";

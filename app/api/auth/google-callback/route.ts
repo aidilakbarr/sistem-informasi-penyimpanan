@@ -61,9 +61,7 @@ export async function GET(req: Request) {
     });
 
     if (userIsExist.role === "USER") {
-      return NextResponse.redirect(
-        new URL(`/mahasiswa/${userIsExist.id}`, req.url)
-      );
+      return NextResponse.redirect(new URL(`/${userIsExist.id}`, req.url));
     }
     return NextResponse.redirect(new URL(`/admin`, req.url));
   }
@@ -95,5 +93,5 @@ export async function GET(req: Request) {
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });
-  return NextResponse.redirect(new URL(`/mahasiswa/${user.id}`, req.url));
+  return NextResponse.redirect(new URL(`/${user.id}`, req.url));
 }

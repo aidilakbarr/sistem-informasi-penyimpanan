@@ -14,21 +14,24 @@ datasource db {
 }
 
 model User {
-  id             String      @id @default(uuid())
-  name           String
-  email          String   @unique
-  password       String
-  emailVerified  Boolean  @default(false)
-  verificationToken  String? 
-  verificationTokenExpires DateTime? 
-  refreshToken       String? 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  lastLogin      DateTime?
-  profilePicture String?
-  role           Role     @default(USER)
+  id                       String    @id @default(uuid())
+  name                     String
+  email                    String    @unique
+  password                 String
+  emailVerified            Boolean   @default(false)
+  verificationToken        String?
+  verificationTokenExpires DateTime?
+  refreshToken             String?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+  lastLogin                DateTime?
+  profilePicture           String?
+  role                     Role      @default(USER)
 
-  pemesanan Pemesanan[]
+  pemesanan        Pemesanan[]
+  chatRoomsAsUser  ChatRoom[]    @relation("UserRooms")
+  chatRoomsAsAdmin ChatRoom[]    @relation("AdminRooms")
+  messages         ChatMessage[]
 }
 
 enum Role {
@@ -37,23 +40,23 @@ enum Role {
 }
 
 model Pemesanan {
-  id               String      @id @default(uuid())
-  nama             String
-  fotoBarang  String[]
-  deskripsiBarang  String?
+  id                String   @id @default(uuid())
+  nama              String
+  fotoBarang        String[]
+  deskripsiBarang   String?
   durasiPenyimpanan String
-  ukuranBarang     String
-  catatan          String?
-  harga    Int?
-  penjemputan      String
-  isAccepted Boolean @default(false)
-  status  Status @default(WAITING)
-  rejectMessage String?
-  paid Boolean @default(false)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  ukuranBarang      String
+  catatan           String?
+  harga             Int?
+  penjemputan       String
+  isAccepted        Boolean  @default(false)
+  status            Status   @default(WAITING)
+  rejectMessage     String?
+  paid              Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  userId String 
+  userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -62,4 +65,24 @@ enum Status {
   ACCEPTED
   REJECTED
   COMPLETED
+}
+
+model ChatRoom {
+  id        String        @id @default(uuid())
+  user      User          @relation("UserRooms", fields: [userId], references: [id])
+  userId    String        @unique
+  admin     User          @relation("AdminRooms", fields: [adminId], references: [id])
+  adminId   String
+  messages  ChatMessage[]
+  createdAt DateTime      @default(now())
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  room      ChatRoom @relation(fields: [roomId], references: [id])
+  roomId    String
+  sender    User     @relation(fields: [senderId], references: [id])
+  senderId  String
+  message   String
+  createdAt DateTime @default(now())
 }

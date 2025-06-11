@@ -81,7 +81,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(
-      { message: "Login Berhasil", id: user.id, user },
+      { message: "Login Berhasil", accessToken, id: user.id, user },
       { status: 200 }
     );
   } catch (error) {

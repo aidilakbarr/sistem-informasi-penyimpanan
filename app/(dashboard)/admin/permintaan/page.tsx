@@ -80,9 +80,9 @@ export default function StorageRequestList() {
     try {
       const response = await db.delete("api/admin/permintaan", {
         data: {
+          alasan,
           idMahasiswa,
           idPermintaan,
-          alasan,
         },
       });
 
@@ -162,9 +162,9 @@ export default function StorageRequestList() {
                   </td>
                   <td
                     className={`border p-3 font-semibold ${
-                      item.status === "Disimpan"
-                        ? "text-blue-500"
-                        : "text-green-500"
+                      item.status === "ACCEPTED"
+                        ? "text-green-500"
+                        : "text-red-500"
                     }`}
                   >
                     {item.status}

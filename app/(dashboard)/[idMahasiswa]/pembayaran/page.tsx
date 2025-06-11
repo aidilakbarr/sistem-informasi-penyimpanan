@@ -1,55 +1,101 @@
-import React from "react";
+"use client";
 
-interface Payment {
-  id: string;
-  orderId: string;
-  method: string;
-  amount: string;
-  status: string;
-}
-
-const paymentData: Payment[] = [
-  {
-    id: "1",
-    orderId: "#2025001",
-    method: "QRIS",
-    amount: "Rp500.000",
-    status: "Lunas",
-  },
-  {
-    id: "2",
-    orderId: "#2025002",
-    method: "Transfer Bank",
-    amount: "Rp300.000",
-    status: "Menunggu Konfirmasi",
-  },
-];
+import { Button } from "@/components/ui/button";
+import db from "@/lib/axiosInstance";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const PaymentHistory: React.FC = () => {
+  const params = useParams();
+  const [storage, setStorage] = useState(null);
+
+  useEffect(() => {
+    const fetchPembayaran = async () => {
+      if (!params.idMahasiswa) return;
+
+      try {
+        const response = await db.get(`api/${params.idMahasiswa}/pembayaran`);
+        console.log({ response });
+
+        setStorage(response.data);
+      } catch (error) {
+        console.error("[Pembayaran]: ", error);
+      }
+    };
+
+    fetchPembayaran();
+  }, [params]);
+
+  useEffect(() => {
+    console.log({ storage });
+  }, [storage]);
   return (
-    <div>
+    <div className="p-4">
       <h2 className="text-xl font-semibold mb-4 text-[#4D55CC]">
-        Status Pembayaran
+        Daftar Pembayaran
       </h2>
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border p-3">ID Pesanan</th>
-            <th className="border p-3">Metode Pembayaran</th>
-            <th className="border p-3">Total Biaya</th>
-            <th className="border p-3">Status Pembayaran</th>
+            <th className="border p-3">No</th>
+            <th className="border p-3">Nama</th>
+            <th className="border p-3">Barang</th>
+            <th className="border p-3">Durasi</th>
+            <th className="border p-3">Ukuran</th>
+            <th className="border p-3">Harga</th>
+            <th className="border p-3">Status</th>
+            <th className="border p-3">Pembayaran</th>
+            <th className="border p-3">Aksi</th>
           </tr>
         </thead>
         <tbody>
-          {paymentData.map((payment) => (
+          {storage?.map((payment, index) => (
             <tr key={payment.id} className="text-center">
-              <td className="border p-3">{payment.orderId}</td>
-              <td className="border p-3">{payment.method}</td>
-              <td className="border p-3">{payment.amount}</td>
+              <td className="border p-3">{index + 1}</td>
+              <td className="border p-3">{payment.nama}</td>
+              <td className="border p-3">{payment.deskripsiBarang}</td>
+              <td className="border p-3">{payment.durasiPenyimpanan}</td>
+              <td className="border p-3">{payment.ukuranBarang}</td>
+              <td className="border p-3">
+                Rp {payment.harga.toLocaleString()}
+              </td>
               <td className="border p-3">{payment.status}</td>
+              <td className="border p-3">
+                {payment.paid ? "Lunas" : "Belum Lunas"}
+              </td>
+              <td className="border p-3">
+                {payment.paid ? (
+                  <Button
+                    variant={"custom"}
+                    disabled
+                    className="cursor-not-allowed"
+                  >
+                    Sudah Dibayar
+                  </Button>
+                ) : (
+                  <Button variant={"custom"}>Bayar Sekarang</Button>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={8} className="border p-3 text-right font-semibold">
+              Total: Rp{" "}
+              {storage &&
+                storage
+                  .reduce((total, payment) => total + payment.harga, 0)
+                  .toLocaleString()}
+            </td>
+            <td colSpan={1} className="border p-3 text-left font-semibold">
+              <Link href={`/${params.idMahasiswa}/bayar`}>
+                <Button variant={"custom"}>Bayar Semua</Button>
+              </Link>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   );

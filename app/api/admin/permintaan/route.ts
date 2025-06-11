@@ -18,6 +18,12 @@ export async function PUT(req: Request) {
     const body = await req.json();
 
     const { harga, idMahasiswa, idPermintaan } = body;
+    if (!harga || !idMahasiswa || !idPermintaan) {
+      return NextResponse.json(
+        { message: "Somebody is missing" },
+        { status: 400 }
+      );
+    }
 
     const pemesanan = await prisma.pemesanan.update({
       data: {
@@ -63,6 +69,9 @@ export async function PATCH(req: Request) {
     const body = await req.json();
 
     const { idMahasiswa, idPermintaan } = body;
+    if (!idMahasiswa || idPermintaan) {
+      return NextResponse.json({ message: "Id is missing" }, { status: 400 });
+    }
 
     const pemesanan = await prisma.pemesanan.update({
       data: {
@@ -108,7 +117,7 @@ export async function GET(req: Request) {
 
     const pemesanan = await prisma.pemesanan.findMany({
       where: {
-        isAccepted: false,
+        paid: false,
       },
       include: {
         user: true,
@@ -146,11 +155,19 @@ export async function DELETE(req: Request) {
 
     const body = await req.json();
 
-    const { pesan, idMahasiswa, idPermintaan } = body;
+    const { alasan, idMahasiswa, idPermintaan } = body;
+
+    if (!alasan || !idMahasiswa || !idPermintaan) {
+      return NextResponse.json(
+        { message: "All fields required", alasan, idMahasiswa, idPermintaan },
+        { status: 400 }
+      );
+    }
 
     const pemesanan = await prisma.pemesanan.update({
       data: {
-        pesan,
+        rejectMessage: alasan,
+        status: "REJECTED",
       },
       where: {
         id: idPermintaan,
@@ -164,7 +181,7 @@ export async function DELETE(req: Request) {
         pemesanan,
         idPermintaan,
         idMahasiswa,
-        pesan,
+        alasan,
       },
       { status: 200 }
     );

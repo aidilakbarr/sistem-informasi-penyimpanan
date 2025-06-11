@@ -42,11 +42,11 @@ const StorageStatus: React.FC = () => {
   }, [storage]);
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4 text-[#4D55CC]">
+      <h2 className="text-[#4D55CC] text-xl font-semibold mb-4">
         Status Penyimpanan Barang
       </h2>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse border border-gray-300">
+        <table className="border border-collapse border-gray-300 w-full">
           <thead>
             <tr className="bg-gray-100 text-center">
               <th className="border p-3">Tanggal</th>
@@ -73,7 +73,7 @@ const StorageStatus: React.FC = () => {
                     <Image
                       src={item.fotoBarang[0]}
                       alt="Foto Barang"
-                      className="w-16 h-16 object-cover rounded-md mx-auto"
+                      className="h-16 rounded-md w-16 mx-auto object-cover"
                       width={100}
                       height={100}
                     />
@@ -85,9 +85,9 @@ const StorageStatus: React.FC = () => {
                   </td>
                   <td
                     className={`border p-3 font-semibold ${
-                      item.status === "Disimpan"
-                        ? "text-blue-500"
-                        : "text-green-500"
+                      item.status === "ACCEPTED"
+                        ? "text-green-500"
+                        : "text-red-500"
                     }`}
                   >
                     {item.status}
@@ -100,7 +100,7 @@ const StorageStatus: React.FC = () => {
                       <DialogContent>
                         <DialogHeader className={cn("py-20")}>
                           <DialogTitle>Detail</DialogTitle>
-                          <table className="w-full border border-gray-300">
+                          <table className="border border-gray-300 w-full">
                             <tbody>
                               <tr>
                                 <td className="border p-3 font-semibold">
@@ -152,20 +152,26 @@ const StorageStatus: React.FC = () => {
                                 <td className="border p-3 font-semibold">
                                   Status
                                 </td>
-                                <td className="border p-3">{item.status}</td>
+                                <td
+                                  className={`border p-3 ${
+                                    item.status === "REJECTED" && "text-red-600"
+                                  }`}
+                                >
+                                  {item.status}
+                                </td>
                               </tr>
                               <tr>
                                 <td className="border p-3 font-semibold">
                                   Foto
                                 </td>
-                                <td className="border p-3 flex gap-2">
+                                <td className="flex border p-3 gap-2">
                                   {item.fotoBarang.map((url, index) =>
                                     url ? (
                                       <Image
                                         key={index}
                                         src={url}
                                         alt={`Product Image ${index}`}
-                                        className="w-32 h-32 object-cover border-2"
+                                        className="border-2 h-32 w-32 object-cover"
                                         width={200}
                                         height={200}
                                       />
@@ -176,10 +182,21 @@ const StorageStatus: React.FC = () => {
                             </tbody>
                           </table>
                         </DialogHeader>
-                        {item.status === "ACCEPTED" && (
-                          <Link href={`/${params.idMahasiswa}/pembayaran`}>
-                            <Button variant={"custom"}>Bayar</Button>
-                          </Link>
+                        {item.status === "ACCEPTED" &&
+                          (item.paid ? (
+                            <Button variant="outline" disabled>
+                              Sudah Dibayar
+                            </Button>
+                          ) : (
+                            <Link href={`/${params.idMahasiswa}/pembayaran`}>
+                              <Button variant="custom">💳 Bayar</Button>
+                            </Link>
+                          ))}
+
+                        {item.status === "REJECTED" && item.rejectMessage && (
+                          <p>
+                            Kami Menolak dengan alasan : {item.rejectMessage}
+                          </p>
                         )}
                       </DialogContent>
                     </Dialog>
