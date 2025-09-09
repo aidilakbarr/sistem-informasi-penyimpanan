@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
-export const settingSchema = z.object({
+const settingSchema = z.object({
   fullName: z.string().min(3, "Full Name harus memiliki minimal 3 karakter"),
   phoneNumber: z
     .string()
@@ -28,13 +28,22 @@ export const settingSchema = z.object({
 });
 
 type PersonalInfo = z.infer<typeof settingSchema>;
+type User = {
+  id: string;
+  name: string;
+  phone: string;
+  address: string;
+  bio?: string;
+  profile?: string;
+};
 
 const Settings = () => {
-  const [profile, setProfile] = useState("");
+  const [profile, setProfile] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const router = useRouter();
-  const { user } = useFetchUser();
+  const { user } = useFetchUser() as { user: User | null };
+
   const {
     register,
     handleSubmit,
@@ -73,7 +82,7 @@ const Settings = () => {
 
       toast.success(response.data.message);
       router.push(`/${params.idUser}/profile`);
-    } catch (error) {
+    } catch (error: any) {
       console.log("[SETTING_PAGE]: ", error);
       toast.error(error.message || "Ada masalah pada server");
     } finally {
@@ -93,7 +102,7 @@ const Settings = () => {
 
       toast.success(response.data.message);
       router.push(`/${params.idUser}/profile`);
-    } catch (error) {
+    } catch (error: any) {
       console.log("[SETTING_PAGE]: ", error);
       toast.error(error.message || "Ada masalah pada server");
     } finally {
@@ -333,7 +342,7 @@ const Settings = () => {
                   </div>
                 </div>
 
-                <UploadFile setProfile={setProfile} imageURL={profile} />
+                <UploadFile setImageURLs={setProfile} imageURLs={profile} />
 
                 <div className="flex justify-end gap-4.5">
                   <button

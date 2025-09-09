@@ -1,11 +1,12 @@
 import { verifyAccessToken } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
+import { pusherServer } from "@/utils/pusher";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { idMahasiswa: string } }
+  { params }: { params: Promise<{ idMahasiswa: string }> }
 ) {
   try {
     const { idMahasiswa } = await params;
@@ -59,7 +60,7 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: { idMahasiswa: string } }
+  { params }: { params: Promise<{ idMahasiswa: string }> }
 ) {
   try {
     const { idMahasiswa } = await params;
@@ -131,6 +132,13 @@ export async function POST(
         },
       },
     });
+
+    await pusherServer.trigger(
+      `chat-${chatRoom.adminId}`,
+      "new-message",
+      newMessage
+    );
+    await pusherServer.trigger(`chat-${decoded.id}`, "new-message", newMessage);
 
     return NextResponse.json(newMessage, { status: 201 });
   } catch (error) {

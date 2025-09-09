@@ -19,7 +19,7 @@ export async function DELETE(req: Request) {
     });
 
     return NextResponse.json({ message: "Berhasil Logout" }, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.log("[LOGOUT: ]", error.message);
     return NextResponse.json(error);
   }

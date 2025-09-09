@@ -6,17 +6,23 @@ import ClickOutside from "@/hooks/useClickOutside";
 import { pusherClient } from "@/utils/pusher";
 import UseFetchNotification from "@/hooks/useFetchNotification";
 
+type Notification = {
+  id: number;
+  message: string;
+  dateTime: string;
+};
+
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifying, setNotifying] = useState(false);
-  const [notifications, setNotification] = useState("");
+  const [notifications, setNotification] = useState<Notification[]>([]);
 
   const { notification } = UseFetchNotification();
   useEffect(() => {
-    setNotification(notification || "");
+    setNotification(notification || []);
     const channel = pusherClient.subscribe("admin-notification");
-    channel.bind("new-notification", (data: [message: string]) => {
-      setNotification((prev) => [...prev, data.message]);
+    channel.bind("new-notification", (data: Notification) => {
+      setNotification((prev) => [...prev, data]);
       setNotifying(true);
     });
 

@@ -6,9 +6,20 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+type Pembayaran = {
+  id: string;
+  nama: string;
+  deskripsiBarang: string;
+  durasiPenyimpanan: string;
+  ukuranBarang: string;
+  harga: number;
+  status: string;
+  paid: boolean;
+};
+
 const PaymentHistory: React.FC = () => {
   const params = useParams();
-  const [storage, setStorage] = useState(null);
+  const [storage, setStorage] = useState<Pembayaran[]>([]);
 
   useEffect(() => {
     const fetchPembayaran = async () => {

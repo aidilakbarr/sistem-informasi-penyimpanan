@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ message: "Token di refresh" }, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.log("[REFRESH_ROUTE: ]", error.message);
     return NextResponse.json({ message: error.message });
   }

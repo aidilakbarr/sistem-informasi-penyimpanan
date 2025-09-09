@@ -52,7 +52,7 @@ const verifyAccessToken = async (token: string) => {
     const { payload } = await jwt.jwtVerify(token, secretKey);
 
     return payload;
-  } catch (error) {
+  } catch (error: any) {
     console.error("[VERIFY_ACCESS_TOKEN: ]", error.message);
     return null;
   }
@@ -62,7 +62,7 @@ const verifyRefreshToken = async (token: string) => {
   try {
     const { payload } = await jwt.jwtVerify(token, secretRefreshKey);
     return payload;
-  } catch (error) {
+  } catch (error: any) {
     console.error("[VERIFY_REFRESH_TOKEN: ]", error.message);
     return null;
   }

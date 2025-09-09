@@ -8,11 +8,13 @@ import {
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  console.log("[MIDDLEWARE] Pathname:", pathname);
 
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/static") ||
     pathname.startsWith("/favicon.ico") ||
+    pathname === "/" ||
     pathname.startsWith("/api")
   ) {
     return NextResponse.next();

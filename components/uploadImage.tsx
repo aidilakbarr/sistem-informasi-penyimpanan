@@ -4,11 +4,15 @@ import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
 import { useEffect } from "react";
 
-interface Image {
+interface UploadImageProps {
   imageURLs: string[];
   setImageURLs: React.Dispatch<React.SetStateAction<string[]>>;
 }
-const UploadImage: React.FC<Image> = ({ imageURLs, setImageURLs }) => {
+
+const UploadImage: React.FC<UploadImageProps> = ({
+  imageURLs,
+  setImageURLs,
+}) => {
   const handleUpload = async (results: any) => {
     setImageURLs((prevURLs) => [...prevURLs, results.info.secure_url]);
   };

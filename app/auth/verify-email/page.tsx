@@ -2,13 +2,13 @@
 
 import db from "@/lib/axiosInstance";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 function VerifyEmailPageContent() {
   const searchParams = useSearchParams();
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState<string | null>(null); // Simpan email di state
+  const [email, setEmail] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -55,4 +55,10 @@ function VerifyEmailPageContent() {
   );
 }
 
-export default VerifyEmailPageContent;
+export default function Page() {
+  return (
+    <Suspense fallback={<p>Loading page...</p>}>
+      <VerifyEmailPageContent />
+    </Suspense>
+  );
+}

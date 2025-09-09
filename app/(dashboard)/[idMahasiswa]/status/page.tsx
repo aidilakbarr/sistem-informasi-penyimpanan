@@ -16,9 +16,24 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+type Pemesanan = {
+  id: string;
+  nama: string;
+  deskripsiBarang: string;
+  durasiPenyimpanan: string;
+  ukuranBarang: string;
+  harga: number;
+  penjemputan: string;
+  status: "WAITING" | "ACCEPTED" | "REJECTED" | "COMPLETED";
+  fotoBarang: string[];
+  createdAt: string;
+  rejectMessage?: string;
+  paid?: boolean;
+};
+
 const StorageStatus: React.FC = () => {
   const params = useParams();
-  const [storage, setStorage] = useState(null);
+  const [storage, setStorage] = useState<Pemesanan[]>([]);
 
   useEffect(() => {
     const fetchPemesanan = async () => {

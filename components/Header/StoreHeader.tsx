@@ -1,7 +1,5 @@
 "use client";
 
-import { IoCartOutline } from "react-icons/io5";
-import SearchPage from "../ui/search";
 import { useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
@@ -45,10 +43,7 @@ export default function StoreHeader({ profile }: { profile: string }) {
         </ul>
       </nav>
       <div className="flex gap-2">
-        <SearchPage search={search} setSearch={setSearch} />
-        <Link href={`/store/${params.idUser}/cart`}>
-          <IoCartOutline className="h-10 w-10 cursor-pointer" />
-        </Link>
+        <Link href={`/store/${params.idUser}/cart`}></Link>
         <DropdownUser profile={profile} />
       </div>
     </div>

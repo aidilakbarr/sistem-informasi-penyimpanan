@@ -1,10 +1,18 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import CardDataStats from "@/components/CardDataStats";
-import ChartOne from "@/components/Charts/ChartOne";
-import ChartThree from "@/components/Charts/ChartThree";
-import ChartTwo from "@/components/Charts/ChartTwo";
 import TableOne from "@/components/Tables/TableOne";
+
+const ChartOne = dynamic(() => import("@/components/Charts/ChartOne"), {
+  ssr: false,
+});
+const ChartTwo = dynamic(() => import("@/components/Charts/ChartTwo"), {
+  ssr: false,
+});
+const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
+  ssr: false,
+});
 
 export default function SummaryPage() {
   const transactions = [

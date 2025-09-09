@@ -27,8 +27,25 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+type StorageItem = {
+  id: string;
+  createdAt: string;
+  fotoBarang: string[];
+  nama: string;
+  durasiPenyimpanan: string;
+  harga: number;
+  status: "WAITING" | "ACCEPTED" | "REJECTED" | "COMPLETED";
+  deskripsiBarang?: string;
+  ukuranBarang?: string;
+  penjemputan?: string;
+  user: {
+    id: string;
+    name: string;
+  };
+};
+
 export default function StorageRequestList() {
-  const [storage, setStorage] = useState(null);
+  const [storage, setStorage] = useState<StorageItem[]>([]);
   const [newHarga, setNewHarga] = useState(0);
   const params = useParams();
   const router = useRouter();

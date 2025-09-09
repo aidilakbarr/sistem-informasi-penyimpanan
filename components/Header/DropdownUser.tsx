@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import db from "@/lib/axiosInstance";
 import { useParams, useRouter } from "next/navigation";
 
-const DropdownUser = ({ profile }: { profile: string }) => {
+const DropdownUser = ({ profile }: { profile?: string }) => {
   const [loading, setLoading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();

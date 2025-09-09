@@ -130,9 +130,9 @@ export default function PemesananForm() {
       });
 
       reset();
-      toast.success(pemesanan?.message);
+      toast.success("Berhasil dipesan");
       router.push(`/${params.idMahasiswa}/status`);
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error?.message);
       console.log(error);
     } finally {

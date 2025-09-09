@@ -84,5 +84,6 @@ model ChatMessage {
   sender    User     @relation(fields: [senderId], references: [id])
   senderId  String
   message   String
+  image     String?
   createdAt DateTime @default(now())
 }

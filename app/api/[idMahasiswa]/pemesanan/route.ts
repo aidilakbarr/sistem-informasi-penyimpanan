@@ -45,7 +45,7 @@ const pemesananSchema = z.object({
 
 export async function POST(
   req: Request,
-  { params }: { params: { idMahasiswa: string } }
+  { params }: { params: Promise<{ idMahasiswa: string }> }
 ) {
   try {
     const { idMahasiswa } = await params;
@@ -120,7 +120,7 @@ export async function POST(
 
 export async function GET(
   req: Request,
-  { params }: { params: { idMahasiswa: string } }
+  { params }: { params: Promise<{ idMahasiswa: string }> }
 ) {
   try {
     const { idMahasiswa } = await params;

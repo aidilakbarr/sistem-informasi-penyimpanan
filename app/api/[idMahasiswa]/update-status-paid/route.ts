@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function PUT(
   req: Request,
-  { params }: { params: { idMahasiswa: string } }
+  { params }: { params: Promise<{ idMahasiswa: string }> }
 ) {
   try {
     const { idMahasiswa } = await params;

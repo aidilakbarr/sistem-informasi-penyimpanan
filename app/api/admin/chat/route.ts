@@ -1,5 +1,6 @@
 import { verifyAccessToken } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
+import { pusherServer } from "@/utils/pusher";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -15,9 +16,9 @@ export async function GET() {
       );
     }
 
-    const chatRoom = await prisma.chatRoom.findUnique({
+    const chatRoom = await prisma.chatRoom.findMany({
       where: {
-        userId: decoded.id as string,
+        adminId: decoded.id as string,
       },
       include: {
         messages: {
@@ -27,11 +28,13 @@ export async function GET() {
       },
     });
 
-    if (!chatRoom || chatRoom.adminId !== decoded.id) {
+    if (!chatRoom) {
       return NextResponse.json({ messages: "Forbidden" }, { status: 403 });
     }
 
-    return NextResponse.json(chatRoom?.messages || [], { status: 200 });
+    const allMessages = chatRoom.flatMap((room) => room.messages);
+
+    return NextResponse.json(allMessages, { status: 200 });
   } catch (error) {
     console.error("[GET_CHAT]: ", error);
     return NextResponse.json(
@@ -46,6 +49,9 @@ export async function POST(req: Request) {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value || "";
     const decoded = await verifyAccessToken(accessToken);
+
+    console.log({ decoded });
+
     if (!decoded || decoded.role !== "ADMIN") {
       return NextResponse.json(
         { error: "Unauthorized", decoded },
@@ -73,7 +79,23 @@ export async function POST(req: Request) {
         senderId: decoded.id,
         roomId: chatRoom.id,
       },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+            role: true,
+          },
+        },
+      },
     });
+
+    await pusherServer.trigger(`chat-${decoded.id}`, "new-message", newMessage);
+    await pusherServer.trigger(
+      `chat-${idMahasiswa}`,
+      "new-message",
+      newMessage
+    );
 
     return NextResponse.json(newMessage, { status: 201 });
   } catch (error) {
